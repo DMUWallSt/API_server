@@ -6,16 +6,33 @@ const port = 3001;
 const ipAddress = "127.0.0.1"; // 원하는 IP 주소를 지정
 const bodyParser = require("body-parser");
 const mysql = require("mysql2"); // mysql 모듈 사용
+const dotenv = require("dotenv").config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "1234",
-  database: "wstest",
+// const db = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "1234",
+//   database: "sw",
+// });
+
+const db = mysql.createConnection({
+  host: process.env.host,
+  port: process.env.port,
+  user: process.env.user,
+  password: process.env.password,
+  database: process.env.database,
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error("데이터베이스 연결 오류:", err);
+    return;
+  }
+  console.log("데이터베이스 연결 성공");
 });
 
 app.get("/news/:id", (req, res) => {
