@@ -35,14 +35,38 @@ db.connect((err) => {
   console.log("데이터베이스 연결 성공");
 });
 
-app.get("/news/:id", (req, res) => {
-  const params = req.params; //{id : 값} 형태로 들어옵니다.
-  const { id } = params; //ES6 Destructuring
-  const sqlQuery = `SELECT * from news_articles`;
-  db.query(sqlQuery, (err, result) => {
-    res.send(result);
+app.get("/news/:corpName", (req, res) => {
+  const params = req.params;
+  const { corpName } = params;
+  const newsQuery = `SELECT * FROM news_table WHERE keyword = "SK하이닉스"`;
+  const corpQuery = `SELECT name,stock_code,company_info,recen_score,finance_score,stock_today,market_cap,trading_vol,total_score FROM company_info WHERE NAME = "삼성전자"`;
+
+  // Execute the first query
+  db.query(newsQuery, (err, newsResult) => {
+    if (err) {
+      console.error("Error executing the news query:", err);
+      res.status(500).send("An error occurred");
+      return;
+    }
+
+    // Execute the second query
+    db.query(corpQuery, (err, corpResult) => {
+      if (err) {
+        console.error("Error executing the corp query:", err);
+        res.status(500).send("An error occurred");
+        return;
+      }
+
+      // Combine both results into a single object
+      const combinedResult = {
+        news: newsResult,
+        company: corpResult,
+      };
+
+      // Send the combined result to the client
+      res.send(combinedResult);
+    });
   });
-  console.log(id);
 });
 
 //세팅한 app을 실행시킨다.
