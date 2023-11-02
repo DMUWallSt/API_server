@@ -38,8 +38,8 @@ db.connect((err) => {
 app.get("/news/:corpName", (req, res) => {
   const params = req.params;
   const { corpName } = params;
-  const newsQuery = `SELECT * FROM news_table WHERE keyword = "SK하이닉스"`;
-  const corpQuery = `SELECT name,stock_code,company_info,recen_score,finance_score,stock_today,market_cap,trading_vol,total_score FROM company_info WHERE NAME = "삼성전자"`;
+  const newsQuery = `SELECT * FROM news_table WHERE keyword = "${corpName}"`;
+  const corpQuery = `SELECT name,stock_code,recen_score,finance_score,stock_today,market_cap,trading_vol,total_score,ratio,diff FROM company_info WHERE NAME = "${corpName}"`;
 
   // Execute the first query
   db.query(newsQuery, (err, newsResult) => {
