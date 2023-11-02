@@ -35,6 +35,21 @@ db.connect((err) => {
   console.log("데이터베이스 연결 성공");
 });
 
+app.get("/wordCloud", (req, res) => {
+  const wordCloudQuery = `(SELECT NAME, ratio FROM company_info ORDER BY ratio DESC LIMIT 4)
+  UNION
+  (SELECT NAME, ratio FROM company_info ORDER BY ratio ASC LIMIT 4)`;
+
+  db.query(wordCloudQuery, (err, Result) => {
+    if (err) {
+      console.error("Error executing the news query:", err);
+      res.status(500).send("An error occurred");
+      return;
+    }
+    console.log(Result);
+    res.send(Result);
+  });
+});
 app.get("/news/:corpName", (req, res) => {
   const params = req.params;
   const { corpName } = params;
