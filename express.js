@@ -35,12 +35,9 @@ db.connect((err) => {
   console.log("데이터베이스 연결 성공");
 });
 
-app.get("/wordCloud", (req, res) => {
-  const wordCloudQuery = `(SELECT NAME, ratio FROM company_info ORDER BY ratio DESC LIMIT 4)
-  UNION
-  (SELECT NAME, ratio FROM company_info ORDER BY ratio ASC LIMIT 4)`;
-
-  db.query(wordCloudQuery, (err, Result) => {
+app.get("/ratio", (req, res) => {
+  const ratioQuery = `SELECT NAME,stock_today,ratio,diff FROM company_info ORDER BY ratio DESC LIMIT 8`;
+  db.query(ratioQuery, (err, Result) => {
     if (err) {
       console.error("Error executing the news query:", err);
       res.status(500).send("An error occurred");
@@ -50,6 +47,62 @@ app.get("/wordCloud", (req, res) => {
     res.send(Result);
   });
 });
+
+app.get("/stock_today", (req, res) => {
+  const stock_todayQuery = `SELECT NAME,stock_today,diff,ratio FROM company_info ORDER BY stock_today DESC LIMIT 8`;
+  db.query(stock_todayQuery, (err, Result) => {
+    if (err) {
+      console.error("Error executing the news query:", err);
+      res.status(500).send("An error occurred");
+      return;
+    }
+    console.log(Result);
+    res.send(Result);
+  });
+});
+
+app.get("/market_cap", (req, res) => {
+  const market_capQuery = `SELECT NAME,market_cap,stock_today,ratio FROM company_info ORDER BY market_cap DESC LIMIT 8`;
+  db.query(market_capQuery, (err, Result) => {
+    if (err) {
+      console.error("Error executing the news query:", err);
+      res.status(500).send("An error occurred");
+      return;
+    }
+    console.log(Result);
+    res.send(Result);
+  });
+});
+
+app.get("/trading_vol", (req, res) => {
+  const trading_volQuery = `SELECT NAME,trading_vol,stock_today,ratio FROM company_info ORDER BY trading_vol DESC LIMIT 8`;
+  db.query(trading_volQuery, (err, Result) => {
+    if (err) {
+      console.error("Error executing the news query:", err);
+      res.status(500).send("An error occurred");
+      return;
+    }
+    console.log(Result);
+    res.send(Result);
+  });
+});
+
+app.get("/wordCloud", (req, res) => {
+  const wordCloudQuery = `
+  (SELECT NAME, ratio FROM company_info ORDER BY ratio DESC LIMIT 4)
+  UNION
+  (SELECT NAME, ratio FROM company_info ORDER BY ratio ASC LIMIT 4)`;
+
+  db.query(wordCloudQuery, (err, Result) => {
+    if (err) {
+      console.error("Error executing the news query:", err);
+      res.status(500).send("An error occurred");
+      return;
+    }
+    res.send(Result);
+  });
+});
+
 app.get("/news/:corpName", (req, res) => {
   const params = req.params;
   const { corpName } = params;
