@@ -43,7 +43,6 @@ app.get("/ratio", (req, res) => {
       res.status(500).send("An error occurred");
       return;
     }
-    console.log(Result);
     res.send(Result);
   });
 });
@@ -56,7 +55,6 @@ app.get("/stock_today", (req, res) => {
       res.status(500).send("An error occurred");
       return;
     }
-    console.log(Result);
     res.send(Result);
   });
 });
@@ -69,7 +67,6 @@ app.get("/market_cap", (req, res) => {
       res.status(500).send("An error occurred");
       return;
     }
-    console.log(Result);
     res.send(Result);
   });
 });
@@ -82,7 +79,6 @@ app.get("/trading_vol", (req, res) => {
       res.status(500).send("An error occurred");
       return;
     }
-    console.log(Result);
     res.send(Result);
   });
 });
