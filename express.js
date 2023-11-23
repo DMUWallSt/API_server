@@ -12,13 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-// const db = mysql.createPool({
-//   host: "localhost",
-//   user: "root",
-//   password: "1234",
-//   database: "sw",
-// });
-
+//env 파일에서 데이터베이스 정보를 가지고 와 데이터베이스 바인딩
 const db = mysql.createConnection({
   host: process.env.host,
   port: process.env.port,
@@ -27,6 +21,7 @@ const db = mysql.createConnection({
   database: process.env.database,
 });
 
+//DB 연결 함수
 db.connect((err) => {
   if (err) {
     console.error("데이터베이스 연결 오류:", err);
@@ -35,6 +30,7 @@ db.connect((err) => {
   console.log("데이터베이스 연결 성공");
 });
 
+//등락률 API
 app.get("/ratio", (req, res) => {
   const ratioQuery = `SELECT NAME,stock_today,ratio,diff FROM company_info ORDER BY ratio DESC LIMIT 8`;
   db.query(ratioQuery, (err, Result) => {
@@ -47,6 +43,7 @@ app.get("/ratio", (req, res) => {
   });
 });
 
+//현재가 API
 app.get("/stock_today", (req, res) => {
   const stock_todayQuery = `SELECT NAME,stock_today,diff,ratio FROM company_info ORDER BY stock_today DESC LIMIT 8`;
   db.query(stock_todayQuery, (err, Result) => {
@@ -59,6 +56,7 @@ app.get("/stock_today", (req, res) => {
   });
 });
 
+//시가총액 API
 app.get("/market_cap", (req, res) => {
   const market_capQuery = `SELECT NAME,market_cap,stock_today,ratio FROM company_info ORDER BY market_cap DESC LIMIT 8`;
   db.query(market_capQuery, (err, Result) => {
@@ -71,6 +69,7 @@ app.get("/market_cap", (req, res) => {
   });
 });
 
+//거래량 API
 app.get("/trading_vol", (req, res) => {
   const trading_volQuery = `SELECT NAME,trading_vol,stock_today,ratio FROM company_info ORDER BY trading_vol DESC LIMIT 8`;
   db.query(trading_volQuery, (err, Result) => {
@@ -83,6 +82,7 @@ app.get("/trading_vol", (req, res) => {
   });
 });
 
+//워드클라우드 API
 app.get("/wordCloud", (req, res) => {
   const wordCloudQuery = `
   (SELECT NAME, ratio FROM company_info ORDER BY ratio DESC LIMIT 4)
@@ -99,6 +99,7 @@ app.get("/wordCloud", (req, res) => {
   });
 });
 
+//기업정보 API
 app.get("/news/:corpName", (req, res) => {
   const params = req.params;
   const { corpName } = params;
@@ -121,13 +122,11 @@ app.get("/news/:corpName", (req, res) => {
         return;
       }
 
-      // Combine both results into a single object
       const combinedResult = {
         news: newsResult,
         company: corpResult,
       };
 
-      // Send the combined result to the client
       res.send(combinedResult);
     });
   });
